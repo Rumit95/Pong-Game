@@ -102,15 +102,39 @@ def game():
     scored_p1 = space.add_collision_handler(1,101)
     scored_p2 = space.add_collision_handler(1,102)
 
+    # def player1_scored(space, arbiter, data):
+    #     player1.score += 1
+    #     ball.reset()
+    #     return False
+
     def player1_scored(space, arbiter, data):
         player1.score += 1
+        if player1.score >= 10:
+            player1.score = 0
+            player2.score = 0
+            show_winner_screen("Player 1 Wins!")
+            # print_text("Player 1 Wins!", middlex - 150, middley, size=75)
+            # pygame.display.update()
+            # pygame.time.wait(2000)
         ball.reset()
         return False
     
     scored_p1.begin = player1_scored
 
+    # def player2_scored(space, arbiter, data):
+    #     player2.score += 1
+    #     ball.reset()
+    #     return False
+
     def player2_scored(space, arbiter, data):
         player2.score += 1
+        if player2.score >= 10:
+            player1.score = 0
+            player2.score = 0
+            show_winner_screen("Player 2 Wins!")
+            # print_text("Player 2 Wins!", middlex - 150, middley, size=75)
+            # pygame.display.update()
+            # pygame.time.wait(2000)
         ball.reset()
         return False
     
@@ -118,6 +142,41 @@ def game():
 
     contact_with_player = space.add_collision_handler(1, 100)
     contact_with_player.post_solve = ball.standarize_velocity
+
+
+    def show_winner_screen(winner_text):
+        waiting_for_enter = True
+        while waiting_for_enter:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    return
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        waiting_for_enter = False
+
+            display.fill((0, 0, 0))
+            print_text(winner_text, middlex - 230, middley - 150, size=100)
+            print_text("Press Enter to Restart", middlex - 250, middley - 20, size=75, alpha=50)
+            pygame.display.update()
+
+
+    waiting_for_enter = True
+    while waiting_for_enter:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    waiting_for_enter = False
+
+        display.fill((0,0,0))
+        print_text("P'o'NG", middlex-100, middley-150, size=100)
+        print_text("Press Enter to Start", middlex-230, middley-20, size=75, alpha=50)
+        # print_text("Press Enter to Restart", middlex - 250, middley - 0, size=75, alpha=50)
+        # print_text("Player 2 Wins!", middlex - 230, middley - 150, size=100)
+        pygame.display.update()
 
     while True:
         for event in pygame.event.get():
@@ -155,7 +214,6 @@ def game():
         print_text(f"{player1.score}", left+400)
         print_text("-", left+470)
         print_text(f"{player2.score}", right-400)
-        # print_text("O", middlex-120, middley-200, 80, 300, "Verdana")
 
         pygame.display.update()
         clock.tick(FPS)
