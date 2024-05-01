@@ -15,6 +15,7 @@ top = 35
 bottom = 565
 middlex = 500
 middley = 300
+dummy = True
 
 def print_text(text, x, y=5, alpha=255, size = 45, font="Algerian"):
     font = pygame.font.SysFont(font, size, False, False)
@@ -150,6 +151,8 @@ def game():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
+                    global dummy
+                    dummy = False
                     return
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_RETURN:
@@ -178,46 +181,52 @@ def game():
         # print_text("Player 2 Wins!", middlex - 230, middley - 150, size=100)
         pygame.display.update()
 
+    
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
+        if dummy:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+       
             
-        keys = pygame.key.get_pressed()
+            keys = pygame.key.get_pressed()
 
-        if keys[pygame.K_w]:
-            player1.move(True)
-        elif keys[pygame.K_s]:
-            player1.move(False)
+            if keys[pygame.K_w]:
+                player1.move(True)
+            elif keys[pygame.K_s]:
+                player1.move(False)
+            else:
+                player1.stop()
+
+            if keys[pygame.K_UP]:
+                player2.move(True)
+            elif keys[pygame.K_DOWN]:
+                player2.move(False)
+            else:
+                player2.stop()
+
+            player1.on_edge()
+            player2.on_edge()
+                
+            display.fill((0,0,0))
+            ball.draw()
+            wall_left.draw()
+            wall_right.draw()
+            wall_top.draw()
+            wall_bottom.draw()
+            player1.draw()
+            player2.draw()
+            pygame.draw.line(display, (255,255,255), (middlex,top), (middlex,bottom), 4)
+            print_text(f"{player1.score}", left+400)
+            print_text("-", left+470)
+            print_text(f"{player2.score}", right-400)
+
+            pygame.display.update()
+            clock.tick(FPS)
+            space.step(1/FPS)
+
         else:
-            player1.stop()
-
-        if keys[pygame.K_UP]:
-            player2.move(True)
-        elif keys[pygame.K_DOWN]:
-            player2.move(False)
-        else:
-            player2.stop()
-
-        player1.on_edge()
-        player2.on_edge()
-            
-        display.fill((0,0,0))
-        ball.draw()
-        wall_left.draw()
-        wall_right.draw()
-        wall_top.draw()
-        wall_bottom.draw()
-        player1.draw()
-        player2.draw()
-        pygame.draw.line(display, (255,255,255), (middlex,top), (middlex,bottom), 4)
-        print_text(f"{player1.score}", left+400)
-        print_text("-", left+470)
-        print_text(f"{player2.score}", right-400)
-
-        pygame.display.update()
-        clock.tick(FPS)
-        space.step(1/FPS)
+            pygame.quit()
 
 game()
 pygame.quit()
