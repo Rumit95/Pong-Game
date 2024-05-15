@@ -17,8 +17,8 @@ middlex = 500
 middley = 300
 dummy = True
 
-def print_text(text, x, y=5, alpha=255, size = 45, font="Algerian"):
-    font = pygame.font.SysFont(font, size, False, False)
+def print_text(text, x, y=5, alpha=255, size = 45, font=None):
+    font = pygame.font.SysFont(None, size, False, False)
     text = font.render(text, True, (255,255,255))
     text.set_alpha(alpha)
     display.blit(text, (x, y))
